@@ -1,56 +1,7 @@
-# #This class represents an entire Sudoku board. A Board object has 81 Cell objects.
-#
-# def __init__(self, width, height, screen, difficulty):
-# 	# Constructor for the Board class.
-# 	# screen is a window from PyGame.
-# 	# difficulty is a variable to indicate if the user chose easy medium, or hard.
-#
-# def draw(self):
-# 	Draws an outline of the Sudoku grid, with bold lines to delineate the 3x3 boxes.
-# 	Draws every cell on this board.
-#
-#
-# def select(self, row, col):
-# 	Marks the cell at (row, col) in the board as the current selected cell.
-# 	Once a cell has been selected, the user can edit its value or sketched value.
-#
-# def click(self, row, col):
-# 	If a tuple of (x,y) coordinates is within the displayed board,
-# this function returns a tuple of the (row, col) of the cell which was clicked.
-# Otherwise, this function returns None.
-#
-# def clear(self):
-# 	Clears the value cell.
-# Note that the user can only remove the cell values and
-# sketched values that are filled by themselves.
-#
-# def sketch(self, value):
-# 	Sets the sketched value of the current selected cell equal to the user entered value.
-# 	It will be displayed at the top left corner of the cell using the draw() function.
-#
-# def place_number(self, value):
-# 	Sets the value of the current selected cell equal to the user entered value.
-# Called when the user presses the Enter key.
-#
-# def reset_to_original(self):
-# 	Resets all cells in the board to their original values
-# (0 if cleared, otherwise the corresponding digit).
-#
-# def is_full(self):
-# 	Returns a Boolean value indicating whether the board is full or not.
-#
-# def update_board(self):
-# 	Updates the underlying 2D board with the values in all cells.
-#
-# def find_empty(self):
-# 	Finds an empty cell and returns its row and col as a tuple (x,y).
-#
-# def check_board(self):
-# Check whether the Sudoku board is solved correctly.
-
 import pygame
-from sudoku_generator import generate_sudoku
-from Cell import Cell
+from sudoku_generator import SudokuGenerator, generate_sudoku
+from cell import Cell
+
 
 class Board:
     def __init__(self, width, height, screen, difficulty):
@@ -58,15 +9,21 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-        if difficulty == 'easy':
+        if difficulty == 'Easy':
             self.removed_cells = 30
-        elif difficulty == 'medium':
+        elif difficulty == 'Medium':
             self.removed_cells = 40
-        elif difficulty == 'hard':
+        elif difficulty == 'Hard':
             self.removed_cells = 50
         else:
             self.removed_cells = 40
-        self.board = generate_sudoku(9, self.removed_cells)
+        generator = SudokuGenerator(9, self.removed_cells)
+        generator.fill_values()
+        self.solution = generator.get_board()  # store the full solution
+        generator.remove_cells()
+        self.board = generator.get_board()
+
+        # self.board = generate_sudoku(9, self.removed_cells)
         self.original = []
         for r in range(9):
             row = []
@@ -89,8 +46,8 @@ class Board:
                 line_width = 4
             else:
                 line_width = 1
-            pygame.draw.line(self.screen, (0, 0, 0), (0, i * cell_size), (self.width, i * cell_size), line_width)
-            pygame.draw.line(self.screen, (0, 0, 0), (i * cell_size, 0), (i * cell_size, self.height), line_width)
+            pygame.draw.line(self.screen, (216, 74, 143), (0, i * cell_size), (self.width, i * cell_size), line_width)
+            pygame.draw.line(self.screen, (216, 74, 143), (i * cell_size, 0), (i * cell_size, self.height), line_width)
         for r in range(9):
             for c in range(9):
                 self.cells[r][c].draw()
@@ -170,22 +127,22 @@ class Board:
             for c in range(9):
                 nums.append(self.board[r][c])
             nums.sort()
-            if nums != [1,2,3,4,5,6,7,8,9]:
+            if nums != [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 return False
         for c in range(9):
             nums = []
             for r in range(9):
                 nums.append(self.board[r][c])
             nums.sort()
-            if nums != [1,2,3,4,5,6,7,8,9]:
+            if nums != [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 return False
         for br in range(3):
             for bc in range(3):
                 nums = []
-                for r in range(br*3, br*3 + 3):
-                    for c in range(bc*3, bc*3 + 3):
+                for r in range(br * 3, br * 3 + 3):
+                    for c in range(bc * 3, bc * 3 + 3):
                         nums.append(self.board[r][c])
                 nums.sort()
-                if nums != [1,2,3,4,5,6,7,8,9]:
+                if nums != [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                     return False
         return True
