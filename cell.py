@@ -39,12 +39,12 @@ class Cell:
 
         if self.sketched != 0 and self.value == 0:
             font = pygame.font.SysFont("comicsans", 30)
-            sketched_text = font.render(str(self.sketched), True, (128, 128, 128))
+            sketched_text = font.render(str(self.sketched), True, 'light pink')
             self.screen.blit(sketched_text, (x + 5, y + 5))
 
         elif self.value != 0:
             font = pygame.font.SysFont("comicsans", 40)
-            text = font.render(str(self.value), True, (0, 0, 0))
+            text = font.render(str(self.value), True, (216, 74, 143))
             rect = text.get_rect(center=(x + square_size // 2, y + square_size // 2))
             self.screen.blit(text, rect)
 
