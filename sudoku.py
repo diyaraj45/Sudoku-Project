@@ -1,7 +1,7 @@
 import pygame
 import sys
 from sudoku_generator import SudokuGenerator
-from Cell import Cell
+from cell import Cell
 from board import Board
 
 # Constants
@@ -20,7 +20,6 @@ pygame.display.set_caption("Sudoku")
 clock = pygame.time.Clock()
 font = pygame.font.SysFont("comfortaa", 40)
 
-
 def draw_start_screen():
     # Background
     background = pygame.image.load("sbb.png")
@@ -31,7 +30,7 @@ def draw_start_screen():
 
     # Title
     title = pygame.font.SysFont("comfortaa", 60).render("Select Difficulty", True, PINK)
-    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 30))
+    screen.blit(title, (WIDTH//2 - title.get_width()//2, 30))
 
     # Game Mode
     buttons = {}
@@ -39,7 +38,7 @@ def draw_start_screen():
     for i, label in enumerate(labels):
         # Rectangle Area and Location
         # Center from the sides, height from top + height from each other, rectangle horizontal, rectangle vertical
-        rect = pygame.Rect(WIDTH // 2 - 75, 150 + i * 90, 150, 50)
+        rect = pygame.Rect(WIDTH//2 - 75, 150 + i * 90, 150, 50)
         # Rectangle Background Color
         pygame.draw.rect(screen, PINKY, rect)
         # Rectangle Word Color
@@ -49,7 +48,6 @@ def draw_start_screen():
 
     pygame.display.update()
     return buttons
-
 
 def draw_playing_screen(board):
     screen.fill("white")
@@ -71,21 +69,21 @@ def draw_playing_screen(board):
     labels = ["Reset", "Restart", "Exit"]
     for i, label in enumerate(labels):
         rect = pygame.Rect(start_x + i * (button_width + spacing), y, button_width, button_height)
-    # Makes the curves on the buttons by giving radius
-    pygame.draw.rect(screen, WHITE, rect, border_radius=10)
-    text = font.render(label, True, PINK)
-    # Centers text in buttons(rect)
-    text_rect = text.get_rect(center=rect.center)
-    screen.blit(text, text_rect)
-    buttons[label.lower()] = rect  # Use lowercase keys for easier matching later
+        # Makes the curves on the buttons by giving radius
+        pygame.draw.rect(screen, WHITE, rect, border_radius=10)
+        text = font.render(label, True, PINK)
+        # Centers text in buttons(rect)
+        text_rect = text.get_rect(center=rect.center)
+        screen.blit(text, text_rect)
+        buttons[label.lower()] = rect
 
     pygame.display.update()
+
 
     # Check if the board is complete and correct
     if board.is_full() and board.check_board():
         return "game_won"
     return "playing", buttons
-
 
 def draw_game_over_screen():
     # Background: Reloads starting page background
@@ -96,7 +94,7 @@ def draw_game_over_screen():
 
     # Title
     title = pygame.font.SysFont("comfortaa", 60).render("Game Over", True, PINK)
-    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 15))
+    screen.blit(title, (WIDTH//2 - title.get_width()//2, 15))
 
     # Restart button
     restart_button = pygame.Rect(WIDTH // 2 - 75, 200, 150, 50)
@@ -107,7 +105,6 @@ def draw_game_over_screen():
     pygame.display.update()
     return restart_button
 
-
 def draw_game_won_screen():
     # Background: Reloads starting page background
     background = pygame.image.load("sbb.png")
@@ -117,16 +114,15 @@ def draw_game_won_screen():
 
     # Title
     title = pygame.font.SysFont("comfortaa", 60).render("Game Won!", True, PINK)
-    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 15))
+    screen.blit(title, (WIDTH//2 - title.get_width()//2, 15))
 
-    exit_button = pygame.Rect(WIDTH // 2 - 75, 150, 150, 50)
+    exit_button = pygame.Rect(WIDTH//2 - 75, 150, 150, 50)
     pygame.draw.rect(screen, PINKY, exit_button)
     exit_text = font.render("Exit", True, PINK)
     screen.blit(exit_text, (exit_button.x + 35, exit_button.y + 10))
 
     pygame.display.update()
     return exit_button
-
 
 def main():
     running = True
@@ -145,6 +141,8 @@ def main():
             exit_button = draw_game_won_screen()
         elif game_state == "playing" and board:
             game_state, play_buttons = draw_playing_screen(board)
+
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -190,10 +188,20 @@ def main():
                     if restart_button.collidepoint(pos):
                         game_state = "start"
 
+            elif event.type == pygame.KEYDOWN:
+                if game_state == "playing" and board.selected:
+                    if pygame.K_1 <= event.key <= pygame.K_9:
+                        board.sketch(event.key - pygame.K_0)
+                    elif event.key == pygame.K_RETURN:
+                        r, c = board.selected
+                        cell = board.cells[r][c]
+                        if cell.sketched != 0:
+                            board.place_number(cell.sketched)
+                    elif event.key == pygame.K_BACKSPACE:
+                        board.clear()
+
     pygame.quit()
     sys.exit()
 
-
 if __name__ == "__main__":
     main()
-

@@ -1,5 +1,5 @@
 import pygame
-from sudoku_generator import generate_sudoku
+from sudoku_generator import SudokuGenerator, generate_sudoku
 from cell import Cell
 
 
@@ -9,15 +9,21 @@ class Board:
         self.height = height
         self.screen = screen
         self.difficulty = difficulty
-        if difficulty == 'easy':
+        if difficulty == 'Easy':
             self.removed_cells = 30
-        elif difficulty == 'medium':
+        elif difficulty == 'Medium':
             self.removed_cells = 40
-        elif difficulty == 'hard':
+        elif difficulty == 'Hard':
             self.removed_cells = 50
         else:
             self.removed_cells = 40
-        self.board = generate_sudoku(9, self.removed_cells)
+        generator = SudokuGenerator(9, self.removed_cells)
+        generator.fill_values()
+        self.solution = generator.get_board()  # store the full solution
+        generator.remove_cells()
+        self.board = generator.get_board()
+
+        # self.board = generate_sudoku(9, self.removed_cells)
         self.original = []
         for r in range(9):
             row = []
@@ -40,8 +46,8 @@ class Board:
                 line_width = 4
             else:
                 line_width = 1
-            pygame.draw.line(self.screen, (0, 0, 0), (0, i * cell_size), (self.width, i * cell_size), line_width)
-            pygame.draw.line(self.screen, (0, 0, 0), (i * cell_size, 0), (i * cell_size, self.height), line_width)
+            pygame.draw.line(self.screen, (216, 74, 143), (0, i * cell_size), (self.width, i * cell_size), line_width)
+            pygame.draw.line(self.screen, (216, 74, 143), (i * cell_size, 0), (i * cell_size, self.height), line_width)
         for r in range(9):
             for c in range(9):
                 self.cells[r][c].draw()
