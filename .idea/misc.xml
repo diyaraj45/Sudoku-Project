@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="Black">
     <option name="sdkName" value="Python 3.13 (Sudoku Final)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (Sudoku Final)" project-jdk-type="Python SDK" />
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (PythonProject)" project-jdk-type="Python SDK" />
+>>>>>>> 51574f3ea2026db62bb54d4f9989aa1843f69bea
 </project>
